@@ -1,12 +1,14 @@
 const express = require("express")
 const mongoose = require("mongoose")
 const dotenv = require("dotenv")
+const morgan = require("morgan")
 const {Blog} = require("./models/blog")
 
 dotenv.config();
 
 const app = express()
 
+app.use(morgan("dev"))
 app.use(express.urlencoded({extended: true}));
 app.use(express.json())
 
