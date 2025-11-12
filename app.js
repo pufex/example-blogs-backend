@@ -28,4 +28,18 @@ app.get("/blogs", async(req, res) => {
     }
 })
 
-
+app.get("/blogs/:id", async (req, res) => {
+    try{
+        const blog_id = req.params.id
+        const blog = await Blog.findById(blog_id)
+        if(!blog){
+            res.status(404)
+            res.send(null)
+        }else{
+            res.send(blog);
+        }
+    }catch{
+        res.status(500)
+        res.send("error")
+    }
+})
