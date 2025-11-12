@@ -8,6 +8,7 @@ dotenv.config();
 const app = express()
 
 app.use(express.urlencoded({extended: true}));
+app.use(express.json())
 
 mongoose.connect(process.env.MONGO_URI)
     .then(() => {
@@ -49,7 +50,9 @@ app.post("/blogs", async (req, res) => {
         const blog = await new Blog(req.body);
         await blog.save();
         res.send(blog);
-    }catch{
+    }catch(err){
+        console.log(err)
+        console.log(body)
         res.status(500)
         res.send("error")
     }
