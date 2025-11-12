@@ -43,3 +43,14 @@ app.get("/blogs/:id", async (req, res) => {
         res.send("error")
     }
 })
+
+app.post("/blogs", async (req, res) => {
+    try{
+        const blog = await new Blog(req.body);
+        await blog.save();
+        res.send(blog);
+    }catch{
+        res.status(500)
+        res.send("error")
+    }
+})
