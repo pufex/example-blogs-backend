@@ -3,4 +3,4 @@ const credentials = (req, res, next) => {
     next()
 }
 
-module.expors = credentials
+module.exports = credentials

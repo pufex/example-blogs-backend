@@ -4,12 +4,13 @@ const jwt = require("jsonwebtoken")
 
 const registerUser = async (req, res) => {
     const {username, password} = req.body
-    const existing_user = await User.find({username})
+    const existing_user = await User.findOne({username})
+    console.log(existing_user)
     if(existing_user){
         res.status(400)
         return res.json({error: true, message: "This user already exists"})
     }
-    hashedPassword = bcrypt.hash(password, 10)
+    hashedPassword = await bcrypt.hash(password, 10)
     const user = new User({username, password: hashedPassword})
     await user.save();
     res.sendStatus(200)
@@ -17,7 +18,7 @@ const registerUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
     const {username, password} = req.body
-    const existing_user = await User.find({username})
+    const existing_user = await User.findOne({username}) 
     if(!existing_user){
         res.status(404)
         return res.json({error: true, message: "User not found"})
@@ -43,7 +44,7 @@ const loginUser = async (req, res) => {
 }
 
 const refreshToken = async (req, res) => {
-    const token = req.cookie.jwt
+    const token = req.cookies?.jwt ?? ""
     if(!token){
         return res.sendStatus(401)
     }
@@ -73,7 +74,7 @@ const refreshToken = async (req, res) => {
 }
 
 const logoutUser = (req, res) => {
-    const token = req.cookie.jwt;
+    const token = req.cookies.jwt;
     res.clearCookie("jwt", { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 30 })
     res.sendStatus(200)
 }
