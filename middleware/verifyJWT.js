@@ -3,8 +3,8 @@ const User = require("../models/user")
 
 const verifyJWT = (req, res, next) => {
     const authHeader = req.headers["authorization"]
-    if(authHeader) {
-        res.sendStatus(401)
+    if(!authHeader) {
+        return res.sendStatus(401)
     }
     const token = authHeader.split(' ')[1]
     jwt.verify(
@@ -12,13 +12,12 @@ const verifyJWT = (req, res, next) => {
         process.env.ACCESS_TOKEN_SECRET,
         async (err, decoded) => {
             if(err){
-                res.sendStatus(401)
+                return res.sendStatus(401)
             }
-
             const user_id = decoded._id ?? ""
-            const user = User.findById(user_id)
+            const user = await User.findById(user_id)
             if(!user){
-                res.sendStatus(401)
+                return res.sendStatus(401)
             }else{
                 req.user = user
                 next()

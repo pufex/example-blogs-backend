@@ -29,6 +29,7 @@ const getBlogById = async (req, res) => {
 const postNewBlog = async (req, res) => {
     try{
         const user_id = req.user._id
+        console.log(req.user)
         const user = await User.findById(user_id)
         if(!user){
             return res.status(401).json({error: true, message: "You must be logged in to create a blog."})
@@ -53,6 +54,7 @@ const deleteBlogById = async (req, res) => {
         }
 
         const user_id = req.user.id
+        console.log(req.user)
         const user =  await User.findById(user_id)
         if(!user){
             return res.status(401).json({error: true, message: "You must be logged in to delete a blog."})
