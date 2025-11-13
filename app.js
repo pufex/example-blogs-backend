@@ -61,3 +61,15 @@ app.post("/blogs", async (req, res) => {
         res.send("error")
     }
 })
+
+app.delete("/blogs/:id", async (req, res) => {
+    try{
+        const blog_id = req.params.id
+        await Blog.findByIdAndDelete(blog_id);
+        res.send("OK")
+    }catch(err){
+        console.log(err)
+        res.status(500)
+        res.send("error")
+    }
+})
