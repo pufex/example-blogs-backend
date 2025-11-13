@@ -5,16 +5,22 @@ const morgan = require("morgan")
 const cors = require("cors")
 const {Blog} = require("./models/blog")
 const blogRouter = require("./routers/blogsRouter")
+const authRouter = require("./routers/authRouter")
+const cookieParser = require("cookie-parser")
+const credentials = require("./middleware/credentials")
 
 dotenv.config();
 
 const app = express()
 
 app.use(cors())
+app.use(cookieParser())
 app.use(morgan("dev"))
 app.use(express.urlencoded({extended: true}));
 app.use(express.json())
+app.use(credentials)
 
+app.use("/auth", authRouter)
 app.use(blogRouter)
 
 mongoose.connect(process.env.MONGO_URI)
