@@ -7,6 +7,7 @@ const {Blog} = require("./models/blog")
 const blogRouter = require("./routers/blogsRouter")
 const authRouter = require("./routers/authRouter")
 const cookieParser = require("cookie-parser")
+const credentials = require("./middleware/credentials")
 
 dotenv.config();
 
@@ -17,6 +18,7 @@ app.use(cookieParser())
 app.use(morgan("dev"))
 app.use(express.urlencoded({extended: true}));
 app.use(express.json())
+app.use(credentials)
 
 app.use("/auth", authRouter)
 app.use(blogRouter)
