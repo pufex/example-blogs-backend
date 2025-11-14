@@ -1,4 +1,5 @@
 const {Blog} = require("../models/blog")
+const User = require("../models/user")
 
 const getBlogs = async(req, res) => {
     try{
@@ -15,8 +16,7 @@ const getBlogById = async (req, res) => {
         const blog_id = req.params.id
         const blog = await Blog.findById(blog_id)
         if(!blog){
-            res.status(404)
-            res.send(null)
+            res.status(404).json({error: true, message: "Blog not found."})
         }else{
             res.send(blog);
         }
@@ -28,7 +28,13 @@ const getBlogById = async (req, res) => {
 
 const postNewBlog = async (req, res) => {
     try{
-        const blog = await new Blog(req.body);
+        const user_id = req.user._id
+        console.log(req.user)
+        const user = await User.findById(user_id)
+        if(!user){
+            return res.status(401).json({error: true, message: "You must be logged in to create a blog."})
+        }
+        const blog = new Blog({...req.body, user_id});
         await blog.save();
         res.send(blog);
     }catch(err){
@@ -42,7 +48,23 @@ const postNewBlog = async (req, res) => {
 const deleteBlogById = async (req, res) => {
     try{
         const blog_id = req.params.id
-        await Blog.findByIdAndDelete(blog_id);
+        const blog = await Blog.findById(blog_id);
+        if(!blog){
+            res.sendStatus(204)
+        }
+
+        const user_id = req.user.id
+        console.log(req.user)
+        const user =  await User.findById(user_id)
+        if(!user){
+            return res.status(401).json({error: true, message: "You must be logged in to delete a blog."})
+        }
+
+        if(user_id != blog.user_id){
+            return res.status(403).json({error: true, message: "This blog doesn't belong to you."})
+        }
+
+        await blog.deleteOne()
         res.send("OK")
     }catch(err){
         console.log(err)
