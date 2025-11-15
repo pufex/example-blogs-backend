@@ -36,7 +36,7 @@ const loginUser = async (req, res) => {
     const accessToken = jwt.sign(
         {username, _id: existing_user._id},
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: "30d" }
+        { expiresIn: "2h" }
     )
     res.cookie("jwt", refreshToken, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 30 })
     res.status(200)
